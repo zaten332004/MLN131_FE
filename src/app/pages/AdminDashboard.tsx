@@ -1,4 +1,4 @@
-import { type ComponentType, useEffect, useMemo, useState } from "react";
+import { type ComponentType, useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router";
 import { Activity, Clock, RefreshCcw, Search, Shield, UserCheck, UserX, Users } from "lucide-react";
 import { Navigation } from "../components/Navigation";
@@ -27,11 +27,29 @@ export function AdminDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState<RealtimeStatsResponse | null>(null);
   const [statsError, setStatsError] = useState<string>("");
+  const [statsLoading, setStatsLoading] = useState(false);
 
   const [q, setQ] = useState("");
   const [users, setUsers] = useState<AdminUserResponse[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersError, setUsersError] = useState<string>("");
+
+  const refreshStats = useCallback(async () => {
+    if (!user || user.role !== "admin") {
+      return;
+    }
+
+    setStatsLoading(true);
+    try {
+      const next = await getRealtimeStats();
+      setStatsError("");
+      setStats(next);
+    } catch (e) {
+      setStatsError(e instanceof Error ? e.message : "KhÃ´ng táº£i Ä‘Æ°á»£c realtime stats.");
+    } finally {
+      setStatsLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!user || user.role !== "admin") {
@@ -56,11 +74,9 @@ export function AdminDashboard() {
     };
 
     fetchStats();
-    const timer = window.setInterval(fetchStats, 2000);
 
     return () => {
       isCancelled = true;
-      window.clearInterval(timer);
     };
   }, [user]);
 
@@ -128,20 +144,30 @@ export function AdminDashboard() {
         <section className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900">Quản trị viên</h1>
           <p className="text-gray-600 mt-2">
-            Số liệu realtime từ backend.
+          
             {stats?.asOf ? ` (Cập nhật lúc ${formatShortDateTime(stats.asOf)})` : ""}
           </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              onClick={refreshStats}
+              disabled={statsLoading}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 hover:bg-gray-50 disabled:opacity-50"
+              title="Refresh stats"
+            >
+              <RefreshCcw size={18} className={statsLoading ? "animate-spin" : ""} />
+              {statsLoading ? "Refreshing..." : "Refresh stats"}
+            </button>
+          </div>
           {statsError && <p className="text-sm text-red-600 mt-2">{statsError}</p>}
         </section>
 
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard icon={Users} title="Visitors online" value={(stats?.visitorsOnline ?? 0).toString()} tone="blue" live />
+          <StatCard icon={Users} title="Visitors online" value={(stats?.visitorsOnline ?? 0).toString()} tone="blue" />
           <StatCard
             icon={Activity}
             title="Logged-in online"
             value={(stats?.loggedInOnline ?? 0).toString()}
             tone="green"
-            live
           />
           <StatCard
             icon={Shield}
