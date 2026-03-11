@@ -1,7 +1,75 @@
 import * as crypto from "node:crypto";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 type Role = "admin" | "user" | "viewer";
 type ChatRole = "user" | "assistant";
+
+type GeminiContentPart = { text: string };
+type GeminiContent = { role: "user"; parts: GeminiContentPart[] };
+
+const CH5_REFERENCE_PATH = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "guidelines",
+  "gemini-priority-chuong-5.md",
+);
+
+let ch5ReferenceCache: string | null | undefined = undefined;
+
+async function loadCh5ReferenceText() {
+  if (ch5ReferenceCache !== undefined) return ch5ReferenceCache;
+  try {
+    const raw = await readFile(CH5_REFERENCE_PATH, "utf8");
+    const normalized = String(raw ?? "").trim();
+    ch5ReferenceCache = normalized || null;
+  } catch {
+    ch5ReferenceCache = null;
+  }
+  return ch5ReferenceCache;
+}
+
+function shouldInjectCh5Reference(message: string) {
+  const n = normalize(message);
+  if (!n) return false;
+  return (
+    n.includes("chuong 5") ||
+    n.includes("co cau xa hoi") ||
+    n.includes("co cau xa hoi - giai cap") ||
+    n.includes("giai cap") ||
+    n.includes("tang lop") ||
+    n.includes("lien minh") ||
+    n.includes("qua do len chu nghia xa hoi") ||
+    n.includes("cnxh")
+  );
+}
+
+async function buildGeminiContents(message: string): Promise<GeminiContent[]> {
+  const base: GeminiContent[] = [{ role: "user", parts: [{ text: message }] }];
+
+  if (!shouldInjectCh5Reference(message)) return base;
+
+  const ref = await loadCh5ReferenceText();
+  if (!ref) return base;
+
+  const maxChars = 18_000;
+  const clipped = ref.length > maxChars ? `${ref.slice(0, maxChars)}\n\n[TRUNCATED]` : ref;
+
+  const primer = [
+    "Bạn là trợ lý học tập. Hãy trả lời bằng tiếng Việt, đúng trọng tâm và có cấu trúc.",
+    "Ưu tiên sử dụng tài liệu tham khảo dưới đây về “Chương 5” để trả lời. Không cần yêu cầu người dùng cung cấp lại nội dung chương.",
+    "Nếu câu hỏi vượt phạm vi tài liệu, hãy nói rõ phần nào không có trong tài liệu và trả lời theo kiến thức chung (ngắn gọn).",
+    "",
+    "TÀI LIỆU THAM KHẢO (Chương 5):",
+    clipped,
+  ].join("\n");
+
+  return [
+    { role: "user", parts: [{ text: primer }] },
+    { role: "user", parts: [{ text: message }] },
+  ];
+}
 
 type KvUser = {
   id: string;
@@ -778,7 +846,7 @@ export default async function handler(req: any, res: any) {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: message }] }],
+          contents: await buildGeminiContents(message),
           generationConfig: { temperature: 0.4 },
         }),
       });
@@ -817,7 +885,7 @@ export default async function handler(req: any, res: any) {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: message }] }],
+          contents: await buildGeminiContents(message),
           generationConfig: { temperature: 0.4 },
         }),
       });
