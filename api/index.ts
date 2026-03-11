@@ -12,14 +12,14 @@ type GeminiContent = { role: "user"; parts: GeminiContentPart[] };
 const CH5_REFERENCE_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "guidelines",
-  "gemini-priority-chuong-5.md",
+  "gemini-priority-chuong-5.txt",
 );
 
 const CH5_REFERENCE_FALLBACK_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
   "guidelines",
-  "gemini-priority-chuong-5.md",
+  "gemini-priority-chuong-5.txt",
 );
 
 let ch5ReferenceCache: string | null | undefined = undefined;
