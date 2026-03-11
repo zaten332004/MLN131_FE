@@ -1,7 +1,5 @@
 import * as crypto from "node:crypto";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { CH5_REFERENCE_TEXT } from "./gemini-priority-chuong-5.generated";
 
 type Role = "admin" | "user" | "viewer";
 type ChatRole = "user" | "assistant";
@@ -9,36 +7,9 @@ type ChatRole = "user" | "assistant";
 type GeminiContentPart = { text: string };
 type GeminiContent = { role: "user"; parts: GeminiContentPart[] };
 
-const CH5_REFERENCE_PATH = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "guidelines",
-  "gemini-priority-chuong-5.txt",
-);
-
-const CH5_REFERENCE_FALLBACK_PATH = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "guidelines",
-  "gemini-priority-chuong-5.txt",
-);
-
-let ch5ReferenceCache: string | null | undefined = undefined;
-
-async function loadCh5ReferenceText() {
-  if (ch5ReferenceCache !== undefined) return ch5ReferenceCache;
-  try {
-    let raw: string | null = null;
-    try {
-      raw = await readFile(CH5_REFERENCE_PATH, "utf8");
-    } catch {
-      raw = await readFile(CH5_REFERENCE_FALLBACK_PATH, "utf8");
-    }
-    const normalized = String(raw ?? "").trim();
-    ch5ReferenceCache = normalized || null;
-  } catch {
-    ch5ReferenceCache = null;
-  }
-  return ch5ReferenceCache;
+function loadCh5ReferenceText() {
+  const normalized = String(CH5_REFERENCE_TEXT ?? "").trim();
+  return normalized || null;
 }
 
 function shouldInjectCh5Reference(message: string) {
@@ -68,28 +39,28 @@ async function buildGeminiContents(message: string): Promise<GeminiContent[]> {
 
   if (!shouldInjectCh5Reference(message)) return base;
 
-  const ref = await loadCh5ReferenceText();
-  if (!ref) return base;
+  const ref = loadCh5ReferenceText();
 
   const maxChars = 18_000;
-  const clipped = ref.length > maxChars ? `${ref.slice(0, maxChars)}\n\n[TRUNCATED]` : ref;
+  const clipped = ref ? (ref.length > maxChars ? `${ref.slice(0, maxChars)}\n\n[TRUNCATED]` : ref) : "";
 
   const primer = [
     "Bạn là trợ lý học tập. Hãy trả lời bằng tiếng Việt, đúng trọng tâm và có cấu trúc.",
     "Định dạng câu trả lời bằng Markdown: dùng tiêu đề (##), gạch đầu dòng (-), và **in đậm** cho ý quan trọng.",
     "Trong ứng dụng này, nếu người dùng nói 'chương' mà không nêu số/tên chương, hãy hiểu mặc định là 'Chương 5'.",
     "Nếu người dùng yêu cầu 'tóm tắt chương' (không nêu rõ), hãy tóm tắt nội dung chính của 'Chương 5' theo tài liệu tham khảo.",
-    "Ưu tiên sử dụng tài liệu tham khảo dưới đây về “Chương 5” để trả lời. Không cần yêu cầu người dùng cung cấp lại nội dung chương.",
+    "Ưu tiên sử dụng tài liệu tham khảo (nếu có) về “Chương 5” để trả lời. Không cần yêu cầu người dùng cung cấp lại nội dung chương.",
     "Nếu câu hỏi vượt phạm vi tài liệu, hãy nói rõ phần nào không có trong tài liệu và trả lời theo kiến thức chung (ngắn gọn).",
     "",
-    "TÀI LIỆU THAM KHẢO (Chương 5):",
-    clipped,
+    clipped ? "TÀI LIỆU THAM KHẢO (Chương 5):" : "TÀI LIỆU THAM KHẢO (Chương 5): [không có dữ liệu tham khảo]",
+    clipped ? clipped : "",
+    "",
+    "CÂU HỎI:",
+    message,
   ].join("\n");
 
-  return [
-    { role: "user", parts: [{ text: primer }] },
-    { role: "user", parts: [{ text: message }] },
-  ];
+  // Single message to reduce chance the model ignores the reference/instructions.
+  return [{ role: "user", parts: [{ text: primer }] }];
 }
 
 type KvUser = {
