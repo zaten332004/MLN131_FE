@@ -245,6 +245,34 @@ export function ChatBot() {
     [],
   );
 
+  // Prevent the underlying page from jumping/scrolling when interacting with the fixed chat UI.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const body = document.body;
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflowY: body.style.overflowY,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflowY = "scroll";
+
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      body.style.overflowY = prev.overflowY;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isAuthenticated || !isOpen) return;
 
