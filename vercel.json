@@ -1,3 +1,9 @@
 {
-  "routes": [{ "handle": "filesystem" }, { "src": "^/(.*)$", "dest": "/index.html" }]
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "^/api/(.*)$", "dest": "/api/index?path=$1" },
+    { "src": "^/api$", "dest": "/api/index" },
+    { "src": "^/uploads/(.*)$", "dest": "/api/index?path=uploads/$1" },
+    { "src": "^/(.*)$", "dest": "/index.html" }
+  ]
 }
