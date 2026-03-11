@@ -1,5 +1,6 @@
 import * as crypto from "node:crypto";
-import { CH5_REFERENCE_TEXT } from "./gemini-priority-chuong-5.generated";
+// Note: Vercel deploys this as ESM; include the `.js` extension for Node's ESM resolver.
+import { CH5_REFERENCE_TEXT } from "./gemini-priority-chuong-5.generated.js";
 
 type Role = "admin" | "user" | "viewer";
 type ChatRole = "user" | "assistant";
