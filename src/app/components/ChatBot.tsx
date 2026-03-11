@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Maximize2, MessageCircle, Minimize2, Send, X } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getHistory as getChatHistory, sendMessage as sendChatMessage } from "../api/chat";
 import { ApiError } from "../api/http";
@@ -229,6 +229,7 @@ function toChatErrorMessage(err: unknown) {
 export function ChatBot() {
   const { isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const [inputText, setInputText] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -244,6 +245,21 @@ export function ChatBot() {
     () => ["cơ cấu xã hội - giai cấp", "quy luật biến đổi", "liên minh giai cấp", "nội dung liên minh"],
     [],
   );
+
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = useCallback((smooth = false) => {
+    const el = bottomRef.current;
+    if (!el) return;
+    el.scrollIntoView({ block: "end", behavior: smooth ? "smooth" : "auto" });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const id = window.requestAnimationFrame(() => scrollToBottom(false));
+    return () => window.cancelAnimationFrame(id);
+  }, [isOpen, isMaximized, messages.length, scrollToBottom]);
 
   // Prevent the underlying page from jumping/scrolling when interacting with the fixed chat UI.
   useEffect(() => {
@@ -282,11 +298,11 @@ export function ChatBot() {
         if (cancelled) return;
         if (!history.items?.length) return;
 
-        const ordered = history.items.slice().reverse();
-        setMessages(
-          ordered.map((m) => ({
-            id: m.id,
-            text: m.content,
+      const ordered = history.items.slice().reverse();
+      setMessages(
+        ordered.map((m) => ({
+          id: m.id,
+          text: m.content,
             sender: m.role === "assistant" ? "bot" : "user",
             timestamp: new Date(m.createdAt),
           })),
@@ -351,7 +367,10 @@ export function ChatBot() {
     <>
       {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsMaximized(false);
+            setIsOpen(true);
+          }}
           className="fixed bottom-4 right-4 w-12 h-12 rounded-full bg-[#0084ff] text-white shadow-xl hover:scale-105 transition-transform z-50"
           aria-label="Mở trợ lý AI"
         >
@@ -360,24 +379,39 @@ export function ChatBot() {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-4 right-4 w-[min(92vw,360px)] h-[min(70vh,520px)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50">
+        <div
+          className={`fixed bottom-4 right-4 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 ${
+            isMaximized ? "w-[min(96vw,720px)] h-[min(88vh,820px)]" : "w-[min(92vw,360px)] h-[min(70vh,520px)]"
+          }`}
+        >
           <div className="bg-[#0084ff] text-white rounded-t-2xl px-4 py-3 flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-sm">Trợ lý AI</h3>
               <p className="text-[11px] text-blue-100">Hỏi nhanh nội dung Chương 5</p>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center"
-              aria-label="Đóng trợ lý AI"
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setIsMaximized((v) => !v)}
+                className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center"
+                aria-label={isMaximized ? "Thu nhỏ khung chat" : "Phóng to khung chat"}
+                title={isMaximized ? "Thu nhỏ" : "Phóng to"}
+              >
+                {isMaximized ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center"
+                aria-label="Đóng trợ lý AI"
+                title="Đóng"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           <div className="px-4 py-2 border-b border-gray-100 text-xs text-gray-600">Gợi ý: {botHints.join(" • ")}</div>
 
-          <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+          <div ref={scrollerRef} className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
             {messages.map((message) => (
               <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
                 <div
@@ -394,6 +428,7 @@ export function ChatBot() {
                 </div>
               </div>
             ))}
+            <div ref={bottomRef} />
           </div>
 
           <div className="p-3 border-t border-gray-200 bg-white rounded-b-2xl">
@@ -403,6 +438,7 @@ export function ChatBot() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                onFocus={() => scrollToBottom(false)}
                 placeholder="Nhập câu hỏi..."
                 disabled={isSending}
                 className="flex-1 px-3 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
