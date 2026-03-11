@@ -33,8 +33,15 @@ async function loadCh5ReferenceText() {
 function shouldInjectCh5Reference(message: string) {
   const n = normalize(message);
   if (!n) return false;
+
+  // If user mentions "chương" but doesn't specify which one, default to Chapter 5 (this app's context).
+  const mentionsChapter = /\bchuong\b/.test(n);
+  const mentionsChapterNumber = /\bchuong\s*\d+\b/.test(n);
+  if (mentionsChapter && !mentionsChapterNumber) return true;
+
   return (
     n.includes("chuong 5") ||
+    n.includes("chuong5") ||
     n.includes("co cau xa hoi") ||
     n.includes("co cau xa hoi - giai cap") ||
     n.includes("giai cap") ||
@@ -59,6 +66,7 @@ async function buildGeminiContents(message: string): Promise<GeminiContent[]> {
   const primer = [
     "Bạn là trợ lý học tập. Hãy trả lời bằng tiếng Việt, đúng trọng tâm và có cấu trúc.",
     "Định dạng câu trả lời bằng Markdown: dùng tiêu đề (##), gạch đầu dòng (-), và **in đậm** cho ý quan trọng.",
+    "Trong ứng dụng này, nếu người dùng nói 'chương' mà không nêu số/tên chương, hãy hiểu mặc định là 'Chương 5'.",
     "Ưu tiên sử dụng tài liệu tham khảo dưới đây về “Chương 5” để trả lời. Không cần yêu cầu người dùng cung cấp lại nội dung chương.",
     "Nếu câu hỏi vượt phạm vi tài liệu, hãy nói rõ phần nào không có trong tài liệu và trả lời theo kiến thức chung (ngắn gọn).",
     "",
