@@ -5,14 +5,13 @@ import { shouldUseLocalFallback } from "./localFallback";
 
 export async function getRealtimeStats() {
   try {
-    // Server will include extra fields: totalPageviews/pageviewsLast24h
     const data = await apiRequest<unknown>("/api/admin/stats/realtime", {
       method: "GET",
     });
     if (!data || typeof data !== "object") {
       throw new ApiError("Invalid stats response.", 502, data);
     }
-    return data as RealtimeStatsResponse & Record<string, unknown>;
+    return data as RealtimeStatsResponse;
   } catch (e) {
     if (shouldUseLocalFallback(e)) {
       return await local.getRealtimeStats();

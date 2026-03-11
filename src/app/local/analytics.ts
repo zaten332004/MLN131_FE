@@ -115,12 +115,47 @@ function countSessionsWithin(entries: Array<{ t: number; deviceId: string }>, ga
   return sessions;
 }
 
+function listSessionStarts(entries: Array<{ t: number; deviceId: string }>, gapMs: number) {
+  const byDevice = new Map<string, number[]>();
+  for (const e of entries) {
+    const arr = byDevice.get(e.deviceId) ?? [];
+    arr.push(e.t);
+    byDevice.set(e.deviceId, arr);
+  }
+
+  const starts: number[] = [];
+  for (const times of byDevice.values()) {
+    times.sort((a, b) => a - b);
+    let last = times[0];
+    starts.push(times[0]);
+    for (let i = 1; i < times.length; i++) {
+      const t = times[i];
+      if (t - last > gapMs) {
+        starts.push(t);
+      }
+      last = t;
+    }
+  }
+
+  return starts;
+}
+
 export function countSessionsLast24h(now = Date.now(), gapMs = 30 * 60 * 1000) {
   const dayAgo = now - 24 * 60 * 60 * 1000;
   const entries = readPageviews()
     .map((p) => ({ t: Date.parse(p.at), deviceId: p.deviceId }))
     .filter((p) => Number.isFinite(p.t) && p.t >= dayAgo && p.t <= now);
   return countSessionsWithin(entries, gapMs);
+}
+
+export function countSessionsLast5m(now = Date.now(), gapMs = 30 * 60 * 1000) {
+  const windowAgo = now - 5 * 60 * 1000;
+  const entries = readPageviews()
+    .map((p) => ({ t: Date.parse(p.at), deviceId: p.deviceId }))
+    .filter((p) => Number.isFinite(p.t) && p.t <= now);
+
+  const starts = listSessionStarts(entries, gapMs);
+  return starts.filter((t) => t >= windowAgo && t <= now).length;
 }
 
 export function countTotalSessions(gapMs = 30 * 60 * 1000) {

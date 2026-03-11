@@ -1,6 +1,6 @@
 import { type ComponentType, useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router";
-import { Activity, Clock, RefreshCcw, Search, Shield, UserCheck, UserX, Users } from "lucide-react";
+import { Activity, Clock, MessageCircle, RefreshCcw, Search, UserCheck, UserX, Users } from "lucide-react";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { useAuth } from "../contexts/AuthContext";
@@ -184,14 +184,20 @@ export function AdminDashboard() {
           <StatCard
             icon={Activity}
             title="Tổng lượt truy cập"
-            value={Number((stats as any)?.totalPageviews ?? 0).toLocaleString()}
+            value={Number(stats?.totalPageviews ?? 0).toLocaleString()}
             tone="blue"
           />
           <StatCard
             icon={Clock}
             title="Truy cập (24h)"
-            value={Number((stats as any)?.pageviewsLast24h ?? 0).toLocaleString()}
+            value={Number(stats?.pageviewsLast24h ?? 0).toLocaleString()}
             tone="cyan"
+          />
+          <StatCard
+            icon={Clock}
+            title="Truy cập (5p)"
+            value={Number(stats?.pageviewsLast5m ?? 0).toLocaleString()}
+            tone="emerald"
           />
           <StatCard icon={Users} title="Visitors online" value={(stats?.visitorsOnline ?? 0).toString()} tone="blue" />
           <StatCard
@@ -201,15 +207,15 @@ export function AdminDashboard() {
             tone="green"
           />
           <StatCard
-            icon={Shield}
-            title="Đã chat với AI (total)"
-            value={(stats?.distinctUsersAnsweredTotal ?? 0).toLocaleString()}
+            icon={MessageCircle}
+            title="Tin nhắn đã nhập (total)"
+            value={Number(stats?.messagesTotal ?? 0).toLocaleString()}
             tone="purple"
           />
           <StatCard
-            icon={Shield}
-            title="Đã chat với AI (24h)"
-            value={(stats?.distinctUsersAnsweredLast24h ?? 0).toLocaleString()}
+            icon={MessageCircle}
+            title="Tin nhắn đã nhập (24h)"
+            value={Number(stats?.messagesLast24h ?? 0).toLocaleString()}
             tone="indigo"
           />
           <StatCard icon={Clock} title="Avg session (24h, phút)" value={avgSessionMinutes.toString()} tone="amber" />
@@ -354,7 +360,7 @@ export function AdminDashboard() {
                       <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">Phạm Minh Nhựt</td>
                       <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">SE184520</td>
                       <td className="px-4 py-3 text-sm text-gray-700">
-                        Lọc nội dung, hoàn thành tính năng web, phục chế hình ảnh
+                        Lọc nội dung, hoàn thành tính năng web, phục chế hình ảnh, deploy web
                       </td>
                     </tr>
                   </tbody>

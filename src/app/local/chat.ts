@@ -87,3 +87,45 @@ export function distinctUsersWithAssistantAnswersLast24h(now = Date.now()) {
     }),
   ).length;
 }
+
+export function distinctUsersWithMessages() {
+  const all = readAll();
+  return Object.values(all).filter((h) => h.messages.some((m) => m.role === "user")).length;
+}
+
+export function distinctUsersWithMessagesLast24h(now = Date.now()) {
+  const dayAgo = now - 24 * 60 * 60 * 1000;
+  const all = readAll();
+  return Object.values(all).filter((h) =>
+    h.messages.some((m) => {
+      if (m.role !== "user") return false;
+      const t = Date.parse(m.createdAt);
+      return Number.isFinite(t) && t >= dayAgo && t <= now;
+    }),
+  ).length;
+}
+
+export function countUserMessagesTotal() {
+  const all = readAll();
+  let total = 0;
+  for (const h of Object.values(all)) {
+    total += h.messages.filter((m) => m.role === "user").length;
+  }
+  return total;
+}
+
+export function countUserMessagesLast24h(now = Date.now()) {
+  const dayAgo = now - 24 * 60 * 60 * 1000;
+  const all = readAll();
+  let total = 0;
+  for (const h of Object.values(all)) {
+    for (const m of h.messages) {
+      if (m.role !== "user") continue;
+      const t = Date.parse(m.createdAt);
+      if (Number.isFinite(t) && t >= dayAgo && t <= now) {
+        total += 1;
+      }
+    }
+  }
+  return total;
+}

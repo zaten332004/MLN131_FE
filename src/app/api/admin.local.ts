@@ -2,8 +2,13 @@ import type { AdminUserResponse, RealtimeStatsResponse } from "./types";
 import { ApiError } from "./http";
 import { loadAuth } from "./storage";
 import { findUserByEmail, findUserById, patchUser as patchLocalUser, readUsers } from "../local/db";
-import { countSessionsLast24h, countTotalSessions, readPageviews } from "../local/analytics";
-import { distinctUsersWithAssistantAnswers, distinctUsersWithAssistantAnswersLast24h } from "../local/chat";
+import { countSessionsLast24h, countSessionsLast5m, countTotalSessions, readPageviews } from "../local/analytics";
+import {
+  countUserMessagesLast24h,
+  countUserMessagesTotal,
+  distinctUsersWithMessages,
+  distinctUsersWithMessagesLast24h,
+} from "../local/chat";
 import { prunePresence } from "../local/presence";
 import { emitLocalEvent } from "../local/events";
 
@@ -21,13 +26,15 @@ export function getRealtimeStats() {
     asOf: new Date(now).toISOString(),
     visitorsOnline,
     loggedInOnline,
-    distinctUsersAnsweredTotal: distinctUsersWithAssistantAnswers(),
-    distinctUsersAnsweredLast24h: distinctUsersWithAssistantAnswersLast24h(now),
+    distinctUsersAnsweredTotal: distinctUsersWithMessages(),
+    distinctUsersAnsweredLast24h: distinctUsersWithMessagesLast24h(now),
     avgSessionDurationSecondsLast24h: calcAvgSessionSecondsLast24h(now),
+    totalPageviews: countTotalSessions(),
+    pageviewsLast24h: countSessionsLast24h(now),
+    pageviewsLast5m: countSessionsLast5m(now),
+    messagesTotal: countUserMessagesTotal(),
+    messagesLast24h: countUserMessagesLast24h(now),
   };
-
-  (stats as any).totalPageviews = countTotalSessions();
-  (stats as any).pageviewsLast24h = countSessionsLast24h(now);
 
   return Promise.resolve(stats);
 }

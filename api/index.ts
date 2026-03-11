@@ -619,16 +619,32 @@ export default async function handler(req: any, res: any) {
 
       const totalSessions = await kvCommand<number>("ZCARD", "sessions");
       const sessions24h = await kvCommand<number>("ZCOUNT", "sessions", now - 24 * 60 * 60 * 1000, "+inf");
+      const sessions5m = await kvCommand<number>("ZCOUNT", "sessions", now - 5 * 60 * 1000, "+inf");
+
+      const chatUsersTotal = await kvCommand<number>("SCARD", "metrics:chat:users");
+      const chatUsers24h = await kvCommand<number>("ZCOUNT", "metrics:chat:users:lastSeen", now - 24 * 60 * 60 * 1000, "+inf");
+
+      const messagesTotalRaw = await kvCommand<string | null>("GET", "metrics:chat:userMessages:total");
+      const messagesTotal = messagesTotalRaw ? Number(messagesTotalRaw) : 0;
+      const messagesLast24h = await kvCommand<number>(
+        "ZCOUNT",
+        "metrics:chat:userMessages:last30d",
+        now - 24 * 60 * 60 * 1000,
+        "+inf",
+      );
 
       return json(res, 200, {
         asOf: new Date(now).toISOString(),
         visitorsOnline: devices.size,
         loggedInOnline: users.size,
-        distinctUsersAnsweredTotal: 0,
-        distinctUsersAnsweredLast24h: 0,
+        distinctUsersAnsweredTotal: chatUsersTotal,
+        distinctUsersAnsweredLast24h: chatUsers24h,
         avgSessionDurationSecondsLast24h: 0,
         totalPageviews: totalSessions,
         pageviewsLast24h: sessions24h,
+        pageviewsLast5m: sessions5m,
+        messagesTotal: Number.isFinite(messagesTotal) ? Math.max(0, Math.floor(messagesTotal)) : 0,
+        messagesLast24h,
       });
     }
 
@@ -729,6 +745,14 @@ export default async function handler(req: any, res: any) {
 
       const userMsg: ChatMessage = { id: createId(), role: "user", content: message, createdAt: new Date().toISOString() };
       await appendChatMessage(user.id, userMsg);
+
+      // Metrics for admin dashboard (count only user-input messages).
+      const msgNow = Date.now();
+      await kvCommand("INCR", "metrics:chat:userMessages:total");
+      await kvCommand("ZADD", "metrics:chat:userMessages:last30d", msgNow, `${user.id}:${userMsg.id}`);
+      await kvCommand("ZREMRANGEBYSCORE", "metrics:chat:userMessages:last30d", "-inf", msgNow - 30 * 24 * 60 * 60 * 1000);
+      await kvCommand("SADD", "metrics:chat:users", user.id);
+      await kvCommand("ZADD", "metrics:chat:users:lastSeen", msgNow, user.id);
 
       const faqAnswer = findFaqAnswer(message).trim();
       if (faqAnswer) {

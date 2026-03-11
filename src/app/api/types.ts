@@ -64,6 +64,11 @@ export interface RealtimeStatsResponse {
   distinctUsersAnsweredTotal: number;
   distinctUsersAnsweredLast24h: number;
   avgSessionDurationSecondsLast24h: number;
+  totalPageviews: number;
+  pageviewsLast24h: number;
+  pageviewsLast5m: number;
+  messagesTotal: number;
+  messagesLast24h: number;
 }
 
 export interface AdminUserResponse {
