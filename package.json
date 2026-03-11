@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/sync-gemini-reference.mjs && vite build",
-    "dev": "vite"
+    "dev": "node scripts/sync-gemini-reference.mjs && vite"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
