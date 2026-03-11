@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getHistory as getChatHistory, sendMessage as sendChatMessage } from "../api/chat";
+import { LOCAL_FALLBACK_ENABLED } from "../api/localFallback";
 import { findFaqAnswerLocal } from "../content/chatFaqs";
 
 interface Message {
@@ -84,7 +85,8 @@ export function ChatBot() {
     setIsSending(true);
     try {
       const response = await sendChatMessage({ message: trimmed });
-      const answer = response?.answer?.trim() ? response.answer : findResponse(trimmed);
+      const remoteAnswer = response?.answer?.trim() ? response.answer : "";
+      const answer = remoteAnswer || (LOCAL_FALLBACK_ENABLED ? findResponse(trimmed) : "AI chưa sẵn sàng. Vui lòng kiểm tra cấu hình GEMINI_API_KEY.");
       const botMessage: Message = {
         id: Date.now() + 1,
         text: answer,
@@ -92,10 +94,11 @@ export function ChatBot() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMessage]);
-    } catch {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Request failed.";
       const botMessage: Message = {
         id: Date.now() + 1,
-        text: findResponse(trimmed),
+        text: LOCAL_FALLBACK_ENABLED ? findResponse(trimmed) : errorMessage,
         sender: "bot",
         timestamp: new Date(),
       };
@@ -180,4 +183,3 @@ export function ChatBot() {
     </>
   );
 }
-

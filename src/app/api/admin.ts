@@ -1,18 +1,7 @@
 import type { AdminUserResponse, RealtimeStatsResponse } from "./types";
 import { ApiError, apiRequest } from "./http";
 import * as local from "./admin.local";
-
-function shouldFallback(error: unknown) {
-  if (error instanceof ApiError) {
-    // In local dev, Vite doesn't serve Vercel functions -> 404
-    // In prod without KV configured -> 5xx
-    return error.status === 404 || error.status === 501 || error.status >= 500;
-  }
-  if (error instanceof Error) {
-    return /failed to fetch|networkerror|load failed/i.test(error.message || "");
-  }
-  return true;
-}
+import { shouldUseLocalFallback } from "./localFallback";
 
 export async function getRealtimeStats() {
   try {
@@ -25,7 +14,7 @@ export async function getRealtimeStats() {
     }
     return data as RealtimeStatsResponse & Record<string, unknown>;
   } catch (e) {
-    if (shouldFallback(e)) {
+    if (shouldUseLocalFallback(e)) {
       return await local.getRealtimeStats();
     }
     throw e;
@@ -40,7 +29,7 @@ export async function listUsers(q?: string) {
     }
     return data as AdminUserResponse[];
   } catch (e) {
-    if (shouldFallback(e)) {
+    if (shouldUseLocalFallback(e)) {
       return await local.listUsers(q);
     }
     throw e;
@@ -54,7 +43,7 @@ export async function setUserDisabled(id: string, disabled: boolean) {
       json: { disabled },
     });
   } catch (e) {
-    if (shouldFallback(e)) {
+    if (shouldUseLocalFallback(e)) {
       return await local.setUserDisabled(id, disabled);
     }
     throw e;

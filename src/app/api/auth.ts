@@ -1,16 +1,7 @@
 import type { AuthResponse, UserProfileResponse } from "./types";
 import { ApiError, apiRequest } from "./http";
 import * as local from "./auth.local";
-
-function shouldFallback(error: unknown) {
-  if (error instanceof ApiError) {
-    return error.status === 404 || error.status === 501 || error.status >= 500;
-  }
-  if (error instanceof Error) {
-    return /failed to fetch|networkerror|load failed/i.test(error.message || "");
-  }
-  return true;
-}
+import { shouldUseLocalFallback } from "./localFallback";
 
 export async function register(payload: {
   email: string;
@@ -22,7 +13,7 @@ export async function register(payload: {
   try {
     return await apiRequest<AuthResponse>("/api/auth/register", { method: "POST", json: payload });
   } catch (e) {
-    if (shouldFallback(e)) return await local.register(payload);
+    if (shouldUseLocalFallback(e)) return await local.register(payload);
     throw e;
   }
 }
@@ -31,7 +22,7 @@ export async function login(payload: { email: string; password: string }): Promi
   try {
     return await apiRequest<AuthResponse>("/api/auth/login", { method: "POST", json: payload });
   } catch (e) {
-    if (shouldFallback(e)) return await local.login(payload);
+    if (shouldUseLocalFallback(e)) return await local.login(payload);
     throw e;
   }
 }
@@ -40,7 +31,7 @@ export async function me(): Promise<UserProfileResponse> {
   try {
     return await apiRequest<UserProfileResponse>("/api/auth/me", { method: "GET" });
   } catch (e) {
-    if (shouldFallback(e)) return await local.me();
+    if (shouldUseLocalFallback(e)) return await local.me();
     throw e;
   }
 }
@@ -52,7 +43,7 @@ export async function requestPasswordReset(payload: { email: string }) {
       json: { action: "request", ...payload },
     });
   } catch (e) {
-    if (shouldFallback(e)) return await local.requestPasswordReset(payload);
+    if (shouldUseLocalFallback(e)) return await local.requestPasswordReset(payload);
     throw e;
   }
 }
@@ -64,8 +55,7 @@ export async function resetPassword(payload: { email: string; code: string; newP
       json: { action: "reset", ...payload },
     });
   } catch (e) {
-    if (shouldFallback(e)) return await local.resetPassword(payload);
+    if (shouldUseLocalFallback(e)) return await local.resetPassword(payload);
     throw e;
   }
 }
-

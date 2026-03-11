@@ -423,8 +423,18 @@ async function getChatMessagesNewestFirst(userId: string, page: number, pageSize
 
 function getPathSegments(req: any): string[] {
   const raw = req?.query?.path;
-  if (Array.isArray(raw)) return raw.map((s) => String(s)).filter(Boolean);
-  if (typeof raw === "string" && raw) return [raw];
+  if (Array.isArray(raw)) {
+    return raw
+      .flatMap((s) => String(s).split("/"))
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  if (typeof raw === "string" && raw) {
+    return raw
+      .split("/")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
 
   const url = String(req?.url ?? "/");
   const pathname = url.split("?")[0] || "/";
@@ -442,6 +452,8 @@ export default async function handler(req: any, res: any) {
         ok: true,
         vercelEnv: process.env.VERCEL_ENV ?? null,
         kvConfigured: Boolean(cfg?.url && cfg?.token),
+        geminiConfigured: Boolean(String(process.env.GEMINI_API_KEY ?? "").trim()),
+        geminiModel: (process.env.GEMINI_MODEL ?? "gemini-1.5-flash").trim() || "gemini-1.5-flash",
         kvHost: cfg?.url
           ? (() => {
               try {
@@ -784,6 +796,11 @@ export default async function handler(req: any, res: any) {
 
     return json(res, 404, { message: "Not found." });
   } catch (err: any) {
+    if (String(err?.code ?? "") === "KV_NOT_CONFIGURED") {
+      return json(res, 501, {
+        message: "KV not configured. Set KV_REST_API_URL + KV_REST_API_TOKEN (or UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN).",
+      });
+    }
     return json(res, 500, { message: "Server error", detail: String(err?.message ?? err) });
   }
 }

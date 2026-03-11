@@ -1,16 +1,7 @@
 import type { UserProfileResponse } from "./types";
 import { ApiError, apiRequest } from "./http";
 import * as local from "./profile.local";
-
-function shouldFallback(error: unknown) {
-  if (error instanceof ApiError) {
-    return error.status === 404 || error.status === 501 || error.status >= 500;
-  }
-  if (error instanceof Error) {
-    return /failed to fetch|networkerror|load failed/i.test(error.message || "");
-  }
-  return true;
-}
+import { shouldUseLocalFallback } from "./localFallback";
 
 function assertProfileShape(data: unknown) {
   if (!data || typeof data !== "object") {
@@ -33,7 +24,7 @@ export async function updateProfile(payload: { email?: string; fullName?: string
     const data = await apiRequest<unknown>("/api/profile", { method: "PUT", json: payload });
     return assertProfileShape(data);
   } catch (e) {
-    if (shouldFallback(e)) {
+    if (shouldUseLocalFallback(e)) {
       return await local.updateProfile(payload);
     }
     throw e;
@@ -53,10 +44,9 @@ export async function uploadAvatar(file: File) {
     const data = await apiRequest<unknown>("/api/profile/avatar", { method: "POST", json: { dataUrl } });
     return assertProfileShape(data);
   } catch (e) {
-    if (shouldFallback(e)) {
+    if (shouldUseLocalFallback(e)) {
       return await local.uploadAvatar(file);
     }
     throw e;
   }
 }
-

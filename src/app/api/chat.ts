@@ -3,16 +3,7 @@ import { ApiError, apiRequest } from "./http";
 import { loadAuth } from "./storage";
 import { findUserById } from "../local/db";
 import { appendChatMessage, readChatHistory } from "../local/chat";
-
-function shouldFallback(error: unknown) {
-  if (error instanceof ApiError) {
-    return error.status === 404 || error.status === 501 || error.status >= 500;
-  }
-  if (error instanceof Error) {
-    return /failed to fetch|networkerror|load failed/i.test(error.message || "");
-  }
-  return true;
-}
+import { shouldUseLocalFallback } from "./localFallback";
 
 export async function sendMessage(payload: ChatSendRequest) {
   const trimmed = payload.message.trim();
@@ -25,7 +16,7 @@ export async function sendMessage(payload: ChatSendRequest) {
     const answer = (data as any)?.answer;
     return { answer: typeof answer === "string" ? answer : "" };
   } catch (error) {
-    if (!shouldFallback(error)) {
+    if (!shouldUseLocalFallback(error)) {
       throw error;
     }
 
@@ -70,7 +61,7 @@ export async function getHistory(page = 1, pageSize = 50) {
     }
     return data as ChatHistoryResponse;
   } catch (error) {
-    if (!shouldFallback(error)) {
+    if (!shouldUseLocalFallback(error)) {
       throw error;
     }
 
@@ -94,4 +85,3 @@ export async function getHistory(page = 1, pageSize = 50) {
     return response;
   }
 }
-
