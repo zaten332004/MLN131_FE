@@ -192,6 +192,16 @@ async function patchUser(id: string, patch: Partial<Omit<KvUser, "id" | "created
   if (!existing) return null;
   const now = new Date().toISOString();
 
+  const safePatch: Partial<Omit<KvUser, "id" | "createdAt">> = { ...patch };
+  if ("passwordSalt" in safePatch || "passwordHash" in safePatch) {
+    const salt = typeof (safePatch as any).passwordSalt === "string" ? String((safePatch as any).passwordSalt) : "";
+    const hash = typeof (safePatch as any).passwordHash === "string" ? String((safePatch as any).passwordHash) : "";
+    if (!salt.trim() || !hash.trim()) {
+      delete (safePatch as any).passwordSalt;
+      delete (safePatch as any).passwordHash;
+    }
+  }
+
   const nextEmail = typeof (patch as any)?.email === "string" ? normalizeEmail(String((patch as any).email)) : null;
   if (nextEmail && normalizeEmail(existing.email) !== nextEmail) {
     await kvCommand("DEL", `userByEmail:${normalizeEmail(existing.email)}`);
@@ -199,7 +209,7 @@ async function patchUser(id: string, patch: Partial<Omit<KvUser, "id" | "created
 
   const next: KvUser = {
     ...existing,
-    ...patch,
+    ...safePatch,
     ...(nextEmail ? { email: nextEmail } : {}),
     updatedAt: now,
   };
