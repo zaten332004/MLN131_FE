@@ -5,6 +5,43 @@ Không bắt buộc phải dùng trong mọi câu trả lời; mục tiêu là g
 
 ## I. Cơ cấu xã hội - giai cấp trong thời kỳ quá độ lên chủ nghĩa xã hội
 
+## Khung lý luận: Thời kỳ quá độ lên chủ nghĩa xã hội (tóm lược)
+
+**Thời kỳ quá độ** (giai đoạn quá độ lên chủ nghĩa xã hội) là **giai đoạn chuyển tiếp tất yếu** từ xã hội tư bản chủ nghĩa lên xã hội cộng sản chủ nghĩa (giai đoạn đầu là chủ nghĩa xã hội). Đây là giai đoạn lịch sử **đặc biệt**: *không còn là xã hội tư bản*, nhưng cũng *chưa hoàn toàn là xã hội xã hội chủ nghĩa*.
+
+### 1) Tính tất yếu
+- Không thể “nhảy cóc” một cách đột ngột từ một xã hội đã định hình lâu dài (thiết chế kinh tế - chính trị - xã hội - văn hóa phức tạp) sang xã hội mới.
+- Cần một giai đoạn để **cải tạo cái cũ**, **xây dựng cái mới**, tạo tiền đề vật chất và tinh thần cho chủ nghĩa xã hội.
+
+### 2) Mục đích
+- **Xóa bỏ** những tàn dư của xã hội tư bản chủ nghĩa trên các lĩnh vực.
+- **Xây dựng** cơ sở vật chất - kỹ thuật, kinh tế, chính trị, tư tưởng, văn hóa của chủ nghĩa xã hội.
+- **Chuẩn bị** điều kiện phát triển lên giai đoạn cao hơn (chủ nghĩa cộng sản).
+
+### 3) Nội dung cơ bản
+
+**Kinh tế**
+- Từng bước xóa bỏ sở hữu tư nhân tư bản chủ nghĩa, xác lập các hình thức **sở hữu xã hội chủ nghĩa** (toàn dân, tập thể) làm nền tảng.
+- Phát triển lực lượng sản xuất; **công nghiệp hóa, hiện đại hóa** để tạo cơ sở vật chất - kỹ thuật.
+- Có thể tồn tại **nhiều thành phần kinh tế** (nhà nước, tập thể, tư nhân, FDI…), trong đó kinh tế nhà nước giữ vai trò chủ đạo (tùy điều kiện và mô hình từng quốc gia).
+
+**Chính trị**
+- Thiết lập và củng cố **nhà nước xã hội chủ nghĩa**; thực hiện dân chủ xã hội chủ nghĩa cho đại đa số nhân dân lao động; đồng thời đấu tranh với các lực lượng chống phá.
+- Xây dựng và hoàn thiện hệ thống pháp luật, thể chế chính trị mới.
+
+**Tư tưởng - văn hóa**
+- Đấu tranh với tàn dư tư tưởng, văn hóa lạc hậu; xây dựng nền văn hóa mới, con người mới.
+- Nâng cao dân trí, khoa học - kỹ thuật, giáo dục.
+
+**Xã hội**
+- Từng bước xóa bỏ giai cấp bóc lột; giảm bất bình đẳng; xây dựng quan hệ hợp tác, bình đẳng giữa các tầng lớp.
+- Giải quyết các vấn đề xã hội (nghèo đói, thất nghiệp, tệ nạn…), bảo đảm an sinh.
+
+### 4) Tính chất và độ dài
+- **Lâu dài, phức tạp, khó khăn**, gồm đấu tranh giữa cái cũ và cái mới trên mọi lĩnh vực.
+- **Không cố định**: phụ thuộc điều kiện cụ thể của từng quốc gia (trình độ lực lượng sản xuất, bối cảnh lịch sử, tương quan lực lượng…).
+- Với những nước xuất phát điểm thấp, “bỏ qua” giai đoạn phát triển tư bản chủ nghĩa (ví dụ Việt Nam), thời kỳ quá độ thường **dài và khó khăn hơn**.
+
 ### 1) Khái niệm
 
 Theo quan điểm của chủ nghĩa Mác - Lênin:

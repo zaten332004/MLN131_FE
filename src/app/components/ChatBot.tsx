@@ -13,6 +13,195 @@ interface Message {
   timestamp: Date;
 }
 
+type InlineToken =
+  | { type: "text"; value: string }
+  | { type: "bold"; value: string }
+  | { type: "code"; value: string };
+
+type Block =
+  | { type: "heading"; level: 1 | 2 | 3; tokens: InlineToken[] }
+  | { type: "paragraph"; tokens: InlineToken[] }
+  | { type: "ul"; items: InlineToken[][] }
+  | { type: "ol"; items: InlineToken[][] };
+
+function tokenizeInline(input: string): InlineToken[] {
+  const tokens: InlineToken[] = [];
+  let i = 0;
+
+  const pushText = (value: string) => {
+    if (!value) return;
+    const last = tokens[tokens.length - 1];
+    if (last?.type === "text") {
+      last.value += value;
+      return;
+    }
+    tokens.push({ type: "text", value });
+  };
+
+  while (i < input.length) {
+    const rest = input.slice(i);
+
+    // Inline code: `...`
+    if (rest.startsWith("`")) {
+      const end = rest.indexOf("`", 1);
+      if (end > 0) {
+        const inside = rest.slice(1, end);
+        if (inside) tokens.push({ type: "code", value: inside });
+        i += end + 1;
+        continue;
+      }
+    }
+
+    // Bold: **...**
+    if (rest.startsWith("**")) {
+      const end = rest.indexOf("**", 2);
+      if (end > 1) {
+        const inside = rest.slice(2, end);
+        if (inside) tokens.push({ type: "bold", value: inside });
+        i += end + 2;
+        continue;
+      }
+    }
+
+    pushText(input[i]);
+    i += 1;
+  }
+
+  return tokens;
+}
+
+function parseBlocks(text: string): Block[] {
+  const lines = String(text ?? "")
+    .replace(/\r\n/g, "\n")
+    .split("\n");
+
+  const blocks: Block[] = [];
+  let paragraph: string[] = [];
+
+  const flushParagraph = () => {
+    const joined = paragraph.join(" ").trim();
+    paragraph = [];
+    if (!joined) return;
+    blocks.push({ type: "paragraph", tokens: tokenizeInline(joined) });
+  };
+
+  for (let idx = 0; idx < lines.length; idx++) {
+    const raw = lines[idx];
+    const line = raw.trimEnd();
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      flushParagraph();
+      continue;
+    }
+
+    // Heading: #/##/###
+    const headingMatch = trimmed.match(/^(#{1,3})\s+(.*)$/);
+    if (headingMatch) {
+      flushParagraph();
+      const level = Math.min(3, headingMatch[1].length) as 1 | 2 | 3;
+      blocks.push({ type: "heading", level, tokens: tokenizeInline(headingMatch[2].trim()) });
+      continue;
+    }
+
+    // Unordered list: - item / * item
+    const ulMatch = trimmed.match(/^[-*]\s+(.*)$/);
+    if (ulMatch) {
+      flushParagraph();
+      const items: InlineToken[][] = [tokenizeInline(ulMatch[1].trim())];
+      for (let j = idx + 1; j < lines.length; j++) {
+        const next = lines[j].trim();
+        const m = next.match(/^[-*]\s+(.*)$/);
+        if (!m) break;
+        items.push(tokenizeInline(m[1].trim()));
+        idx = j;
+      }
+      blocks.push({ type: "ul", items });
+      continue;
+    }
+
+    // Ordered list: 1. item
+    const olMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+    if (olMatch) {
+      flushParagraph();
+      const items: InlineToken[][] = [tokenizeInline(olMatch[1].trim())];
+      for (let j = idx + 1; j < lines.length; j++) {
+        const next = lines[j].trim();
+        const m = next.match(/^\d+\.\s+(.*)$/);
+        if (!m) break;
+        items.push(tokenizeInline(m[1].trim()));
+        idx = j;
+      }
+      blocks.push({ type: "ol", items });
+      continue;
+    }
+
+    paragraph.push(trimmed);
+  }
+
+  flushParagraph();
+  return blocks;
+}
+
+function renderInline(tokens: InlineToken[]) {
+  return tokens.map((t, idx) => {
+    if (t.type === "bold") return <strong key={idx}>{t.value}</strong>;
+    if (t.type === "code") {
+      return (
+        <code key={idx} className="px-1 py-0.5 rounded bg-gray-100 text-gray-800">
+          {t.value}
+        </code>
+      );
+    }
+    return <span key={idx}>{t.value}</span>;
+  });
+}
+
+function ChatMarkdown({ text, inverted = false }: { text: string; inverted?: boolean }) {
+  const blocks = useMemo(() => parseBlocks(text), [text]);
+  const headingClass = inverted ? "text-white" : "text-gray-900";
+  const paragraphClass = inverted ? "text-blue-50" : "text-gray-800";
+  const listClass = inverted ? "text-blue-50" : "text-gray-800";
+
+  return (
+    <div className="space-y-2">
+      {blocks.map((b, idx) => {
+        if (b.type === "heading") {
+          const size = b.level === 1 ? "text-base" : "text-sm";
+          return (
+            <div key={idx} className={`${size} font-semibold ${headingClass}`}>
+              {renderInline(b.tokens)}
+            </div>
+          );
+        }
+        if (b.type === "ul") {
+          return (
+            <ul key={idx} className={`list-disc pl-5 space-y-1 ${listClass}`}>
+              {b.items.map((it, i) => (
+                <li key={i}>{renderInline(it)}</li>
+              ))}
+            </ul>
+          );
+        }
+        if (b.type === "ol") {
+          return (
+            <ol key={idx} className={`list-decimal pl-5 space-y-1 ${listClass}`}>
+              {b.items.map((it, i) => (
+                <li key={i}>{renderInline(it)}</li>
+              ))}
+            </ol>
+          );
+        }
+        return (
+          <div key={idx} className={`text-sm leading-relaxed whitespace-pre-wrap ${paragraphClass}`}>
+            {renderInline(b.tokens)}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 const FALLBACK_MESSAGE =
   "Mình đã ghi nhận câu hỏi. Bạn thử hỏi theo từ khóa: cơ cấu xã hội - giai cấp, quy luật biến đổi, liên minh giai cấp, nội dung liên minh.";
  
@@ -170,7 +359,7 @@ export function ChatBot() {
                       : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
                   }`}
                 >
-                  <p>{message.text}</p>
+                  <ChatMarkdown text={message.text} inverted={message.sender === "user"} />
                   <p className={`text-[10px] mt-1 ${message.sender === "user" ? "text-blue-100" : "text-gray-400"}`}>
                     {message.timestamp.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
                   </p>
