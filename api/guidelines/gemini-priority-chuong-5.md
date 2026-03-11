@@ -1,0 +1,208 @@
+# CHƯƠNG 5 — CƠ CẤU XÃ HỘI - GIAI CẤP VÀ LIÊN MINH GIAI CẤP, TẦNG LỚP TRONG THỜI KỲ QUÁ ĐỘ LÊN CHỦ NGHĨA XÃ HỘI
+
+Tài liệu này là “ngữ cảnh ưu tiên” để Gemini tham khảo khi trả lời câu hỏi về Chương 5.  
+Không bắt buộc phải dùng trong mọi câu trả lời; mục tiêu là giúp trả lời đúng trọng tâm, đầy đủ khái niệm, logic và ví dụ thực tiễn Việt Nam.
+
+## I. Cơ cấu xã hội - giai cấp trong thời kỳ quá độ lên chủ nghĩa xã hội
+
+## Khung lý luận: Thời kỳ quá độ lên chủ nghĩa xã hội (tóm lược)
+
+**Thời kỳ quá độ** (giai đoạn quá độ lên chủ nghĩa xã hội) là **giai đoạn chuyển tiếp tất yếu** từ xã hội tư bản chủ nghĩa lên xã hội cộng sản chủ nghĩa (giai đoạn đầu là chủ nghĩa xã hội). Đây là giai đoạn lịch sử **đặc biệt**: *không còn là xã hội tư bản*, nhưng cũng *chưa hoàn toàn là xã hội xã hội chủ nghĩa*.
+
+### 1) Tính tất yếu
+- Không thể “nhảy cóc” một cách đột ngột từ một xã hội đã định hình lâu dài (thiết chế kinh tế - chính trị - xã hội - văn hóa phức tạp) sang xã hội mới.
+- Cần một giai đoạn để **cải tạo cái cũ**, **xây dựng cái mới**, tạo tiền đề vật chất và tinh thần cho chủ nghĩa xã hội.
+
+### 2) Mục đích
+- **Xóa bỏ** những tàn dư của xã hội tư bản chủ nghĩa trên các lĩnh vực.
+- **Xây dựng** cơ sở vật chất - kỹ thuật, kinh tế, chính trị, tư tưởng, văn hóa của chủ nghĩa xã hội.
+- **Chuẩn bị** điều kiện phát triển lên giai đoạn cao hơn (chủ nghĩa cộng sản).
+
+### 3) Nội dung cơ bản
+
+**Kinh tế**
+- Từng bước xóa bỏ sở hữu tư nhân tư bản chủ nghĩa, xác lập các hình thức **sở hữu xã hội chủ nghĩa** (toàn dân, tập thể) làm nền tảng.
+- Phát triển lực lượng sản xuất; **công nghiệp hóa, hiện đại hóa** để tạo cơ sở vật chất - kỹ thuật.
+- Có thể tồn tại **nhiều thành phần kinh tế** (nhà nước, tập thể, tư nhân, FDI…), trong đó kinh tế nhà nước giữ vai trò chủ đạo (tùy điều kiện và mô hình từng quốc gia).
+
+**Chính trị**
+- Thiết lập và củng cố **nhà nước xã hội chủ nghĩa**; thực hiện dân chủ xã hội chủ nghĩa cho đại đa số nhân dân lao động; đồng thời đấu tranh với các lực lượng chống phá.
+- Xây dựng và hoàn thiện hệ thống pháp luật, thể chế chính trị mới.
+
+**Tư tưởng - văn hóa**
+- Đấu tranh với tàn dư tư tưởng, văn hóa lạc hậu; xây dựng nền văn hóa mới, con người mới.
+- Nâng cao dân trí, khoa học - kỹ thuật, giáo dục.
+
+**Xã hội**
+- Từng bước xóa bỏ giai cấp bóc lột; giảm bất bình đẳng; xây dựng quan hệ hợp tác, bình đẳng giữa các tầng lớp.
+- Giải quyết các vấn đề xã hội (nghèo đói, thất nghiệp, tệ nạn…), bảo đảm an sinh.
+
+### 4) Tính chất và độ dài
+- **Lâu dài, phức tạp, khó khăn**, gồm đấu tranh giữa cái cũ và cái mới trên mọi lĩnh vực.
+- **Không cố định**: phụ thuộc điều kiện cụ thể của từng quốc gia (trình độ lực lượng sản xuất, bối cảnh lịch sử, tương quan lực lượng…).
+- Với những nước xuất phát điểm thấp, “bỏ qua” giai đoạn phát triển tư bản chủ nghĩa (ví dụ Việt Nam), thời kỳ quá độ thường **dài và khó khăn hơn**.
+
+### 1) Khái niệm
+
+Theo quan điểm của chủ nghĩa Mác - Lênin:
+- **Cơ cấu xã hội** là tổng thể các cộng đồng người (giai cấp, tầng lớp, nhóm xã hội…) cùng toàn bộ các mối quan hệ xã hội giữa các cộng đồng đó trong một hình thái kinh tế - xã hội nhất định.
+- Cơ cấu xã hội phản ánh quan hệ biện chứng giữa:
+  - **Cơ sở hạ tầng** (đặc biệt là quan hệ sản xuất).
+  - **Kiến trúc thượng tầng** (chính trị, pháp luật, ý thức hệ, văn hóa…).
+
+**Cơ cấu xã hội - giai cấp** là hệ thống các giai cấp và tầng lớp xã hội tồn tại khách quan trong một chế độ xã hội nhất định, được xác định thông qua các quan hệ cơ bản:
+1. **Quan hệ sở hữu tư liệu sản xuất** (công hữu/tư hữu, mức độ chiếm hữu).
+2. **Vai trò trong tổ chức và quản lý quá trình sản xuất** (lao động trực tiếp/gián tiếp; quản lý/bị quản lý).
+3. **Địa vị chính trị - xã hội** (lãnh đạo/bị lãnh đạo; thống trị/bị thống trị).
+
+### 2) Các thành phần cơ bản của cơ cấu xã hội - giai cấp
+
+- **Giai cấp**
+  - Là những tập đoàn người có địa vị kinh tế - xã hội tương đồng trong một hệ thống sản xuất nhất định.
+  - Giữa các giai cấp có thể tồn tại quan hệ đối kháng hoặc không đối kháng (tùy điều kiện lịch sử cụ thể).
+  - Ví dụ trong thời kỳ quá độ: giai cấp công nhân, giai cấp nông dân.
+
+- **Tầng lớp**
+  - Là sự phân hóa bên trong các giai cấp hoặc nằm ở vị trí trung gian giữa các giai cấp.
+  - Có đặc điểm kinh tế - xã hội riêng biệt, gắn với trình độ học vấn, nghề nghiệp, thu nhập, vị trí xã hội…
+  - Ví dụ: tầng lớp trí thức, tầng lớp doanh nhân.
+
+- **Nhóm xã hội**
+  - Là những cộng đồng người nhỏ hơn, có tính ổn định tương đối hoặc tạm thời.
+  - Thường xác định theo nghề nghiệp, độ tuổi, giới tính, tín ngưỡng/tôn giáo…
+  - Ví dụ: thanh niên, phụ nữ, người cao tuổi, các nhóm tôn giáo.
+
+### 3) Vị trí và vai trò của cơ cấu xã hội - giai cấp
+
+**Vai trò trung tâm và có ý nghĩa quyết định** trong hệ thống các loại hình cơ cấu xã hội (kinh tế, chính trị, văn hóa, dân tộc, tôn giáo…).
+
+Lý do:
+- Hình thành trực tiếp từ **quan hệ sản xuất** – nền tảng của đời sống xã hội.
+- Gắn chặt với các vấn đề: đảng phái chính trị và nhà nước; quyền sở hữu tư liệu sản xuất; tổ chức và quản lý lao động; phân phối thu nhập; phân hóa giàu nghèo.
+
+Ý nghĩa thực tiễn:
+- Biến đổi cơ cấu xã hội - giai cấp kéo theo biến đổi nhiều mặt của toàn bộ cơ cấu xã hội.
+- Là cơ sở khoa học để hoạch định đường lối, chính sách phát triển kinh tế - xã hội phù hợp từng giai đoạn lịch sử.
+- Nhận thức không đúng vị trí/đặc trưng có thể dẫn đến sai lầm trong xây dựng khối đại đoàn kết toàn dân tộc.
+
+### 4) Sự biến đổi có tính quy luật của cơ cấu xã hội - giai cấp trong thời kỳ quá độ
+
+Thời kỳ quá độ là giai đoạn cải biến cách mạng từ xã hội tư bản (hoặc tiền tư bản) lên xã hội xã hội chủ nghĩa. Vì vậy, cơ cấu xã hội - giai cấp biến đổi theo các quy luật cơ bản:
+
+1. **Biến đổi gắn liền và chịu sự quy định của cơ cấu kinh tế.**
+   - Khi chuyển sang nền kinh tế nhiều thành phần vận hành theo cơ chế thị trường định hướng xã hội chủ nghĩa, cơ cấu xã hội - giai cấp cũng đa dạng hơn.
+   - Xuất hiện các lực lượng mới: công nhân trong khu vực tư nhân, tầng lớp doanh nhân tư nhân…
+
+2. **Biến đổi theo hướng phức tạp, đa dạng, xuất hiện tầng lớp xã hội mới.**
+   - Do phát triển nhiều thành phần kinh tế, ngành nghề mới, hình thức lao động mới (lao động trí tuệ, dịch vụ, công nghệ cao…).
+   - Thực tiễn Việt Nam sau 1986: tầng lớp trí thức và doanh nhân phát triển mạnh.
+
+3. **Biến đổi trong quan hệ vừa đấu tranh, vừa liên minh; từng bước xóa bỏ bất bình đẳng xã hội.**
+   - Mâu thuẫn giai cấp còn tồn tại nhưng (trong điều kiện cụ thể) xu hướng liên minh, hợp tác và xích lại gần nhau được củng cố trên nền tảng lợi ích chung.
+
+## II. Liên minh giai cấp, tầng lớp trong thời kỳ quá độ lên chủ nghĩa xã hội
+
+### 1) Khái niệm
+
+**Liên minh giai cấp, tầng lớp** trong thời kỳ quá độ lên chủ nghĩa xã hội là sự liên kết, hợp tác và hỗ trợ lẫn nhau giữa các giai cấp, tầng lớp xã hội nhằm:
+- Thực hiện lợi ích chính đáng của các chủ thể trong khối liên minh.
+- Tạo động lực thực hiện thắng lợi mục tiêu xây dựng chủ nghĩa xã hội.
+
+Đây là hình thức tổ chức lực lượng cách mạng cao nhất của giai cấp công nhân; **hạt nhân** là liên minh **công nhân - nông dân - trí thức** dưới sự lãnh đạo của Đảng.
+
+### 2) Tầm quan trọng của liên minh
+
+- **Về chính trị**
+  - Tập hợp lực lượng để tiến hành cách mạng xã hội chủ nghĩa và cải tạo xã hội cũ.
+  - Tạo nền tảng xã hội vững chắc cho chế độ xã hội chủ nghĩa.
+  - Bảo đảm ổn định chính trị, tăng “sức đề kháng” trước các nguy cơ chống phá, “diễn biến hòa bình”.
+  - Hồ Chí Minh nhấn mạnh: “Liên minh công nông là nền tảng của Mặt trận dân tộc thống nhất”.
+
+- **Về kinh tế**
+  - Bảo đảm sự gắn kết giữa công nghiệp - nông nghiệp - dịch vụ.
+  - Xây dựng nền tảng vật chất - kỹ thuật cho chủ nghĩa xã hội.
+  - Hài hòa lợi ích kinh tế giữa công nhân, nông dân, trí thức và các tầng lớp lao động khác.
+
+- **Về văn hóa - xã hội**
+  - Góp phần xây dựng con người mới, nâng cao chất lượng nguồn nhân lực.
+  - Gắn tăng trưởng với tiến bộ và công bằng xã hội; củng cố đoàn kết cộng đồng.
+
+### 3) Nội dung cơ bản của liên minh (3 trụ)
+
+1. **Kinh tế (nội dung cơ bản và quyết định nhất)**
+   - Mục tiêu: thỏa mãn lợi ích kinh tế chính đáng; phát huy tiềm lực của từng lực lượng; xây dựng cơ sở vật chất - kỹ thuật.
+   - Giải pháp: hợp tác công - tư; chuyển giao khoa học - công nghệ; tổ chức sản xuất theo chuỗi; nâng cao năng suất lao động.
+
+2. **Chính trị**
+   - Mục tiêu: bảo vệ chế độ; giữ vững độc lập dân tộc; kiên định định hướng xã hội chủ nghĩa.
+   - Nội dung: bảo đảm sự lãnh đạo của Đảng; phát huy dân chủ xã hội chủ nghĩa; xây dựng Nhà nước pháp quyền; đấu tranh với “tự diễn biến”, “tự chuyển hóa”.
+
+3. **Văn hóa - xã hội**
+   - Mục tiêu: xây dựng con người Việt Nam phát triển toàn diện.
+   - Nội dung: giảm nghèo bền vững; đảm bảo an sinh; nâng cao dân trí, y tế; phát triển văn hóa tiên tiến đậm đà bản sắc dân tộc.
+
+### 4) Phương hướng tăng cường liên minh
+
+- Đẩy mạnh công nghiệp hóa, hiện đại hóa gắn với phát triển kinh tế tri thức; hài hòa tăng trưởng với công bằng xã hội.
+- Xây dựng hệ thống chính sách xã hội đồng bộ (việc làm, tiền lương, nhà ở công nhân, bảo hiểm…).
+- Tăng cường đồng thuận xã hội, phát huy tinh thần đại đoàn kết toàn dân tộc.
+- Hoàn thiện thể chế kinh tế thị trường định hướng xã hội chủ nghĩa; thúc đẩy khoa học - công nghệ và chuyển đổi số.
+- Đổi mới hoạt động của Đảng, Nhà nước và Mặt trận Tổ quốc nhằm củng cố liên minh và đại đoàn kết.
+
+## III. Cơ cấu xã hội - giai cấp và liên minh giai cấp, tầng lớp ở Việt Nam hiện nay
+
+### 1) Đặc điểm nổi bật
+
+- Vừa tuân theo quy luật phổ biến của thời kỳ quá độ, vừa mang tính đặc thù của quốc gia từng trải qua chiến tranh, xuất phát điểm nông nghiệp lạc hậu, từng là thuộc địa nửa phong kiến.
+- Từ Đại hội VI (1986) đến nay, cơ cấu kinh tế nhiều thành phần làm cơ cấu xã hội - giai cấp đa dạng và phân hóa sâu sắc hơn, nhưng vẫn giữ vững định hướng xã hội chủ nghĩa.
+- Vị trí, vai trò của các giai cấp, tầng lớp ngày càng được khẳng định trong thực tiễn đổi mới.
+
+### 2) Một số giai cấp, tầng lớp cơ bản (gợi ý triển khai)
+
+- **Giai cấp công nhân**
+  - Lực lượng lãnh đạo cách mạng thông qua Đảng Cộng sản Việt Nam.
+  - Đại diện cho lực lượng sản xuất tiên tiến; xu hướng trí thức hóa.
+  - Nòng cốt trong liên minh công nhân - nông dân - trí thức; vai trò tiên phong trong CNH-HĐH.
+
+- **Giai cấp nông dân**
+  - Vị trí chiến lược trong CNH-HĐH nông nghiệp, nông thôn; đảm bảo an ninh lương thực.
+  - Chủ thể quan trọng trong xây dựng nông thôn mới; góp phần gìn giữ văn hóa, môi trường.
+
+- **Đội ngũ trí thức**
+  - Lực lượng lao động sáng tạo đặc biệt quan trọng trong CMCN 4.0 và kinh tế tri thức.
+  - Cầu nối giữa lý luận và thực tiễn; góp phần nâng tầm năng lực khoa học - công nghệ.
+
+- **Đội ngũ doanh nhân**
+  - Phát triển về số lượng và chất lượng; đóng góp tăng trưởng, tạo việc làm, đổi mới sáng tạo.
+  - Được định hướng xây dựng thành lực lượng vững mạnh, có trách nhiệm xã hội.
+
+- **Các nhóm xã hội khác (phụ nữ, thanh niên…)**
+  - Phụ nữ: lực lượng đông đảo, vai trò ngày càng nổi bật trong quản lý, lãnh đạo, kinh tế gia đình và xã hội.
+  - Thanh niên: “rường cột của nước nhà”, xung kích trong chuyển đổi số, khởi nghiệp, bảo vệ Tổ quốc.
+
+### 3) Nội dung liên minh giai cấp, tầng lớp ở Việt Nam (triển khai theo 3 trụ)
+
+- **Kinh tế:** đẩy mạnh CNH-HĐH; phát triển nhanh và bền vững; giải quyết hài hòa lợi ích giữa các chủ thể; xây dựng kế hoạch đầu tư phù hợp.
+- **Chính trị:** củng cố vai trò lãnh đạo của Đảng; xây dựng nhà nước trong sạch, vững mạnh; phát huy quyền làm chủ của nhân dân.
+- **Văn hóa - xã hội:** xây dựng văn hóa tiên tiến, đậm đà bản sắc; nâng cao chất lượng nguồn nhân lực; xóa đói giảm nghèo; chăm sóc sức khỏe nhân dân.
+
+### 4) Phương hướng chung ở Việt Nam (tóm tắt)
+
+1. Tạo môi trường thuận lợi để cơ cấu xã hội - giai cấp biến đổi tích cực.
+2. Xây dựng, thực hiện hệ thống chính sách xã hội tổng thể (giáo dục, lao động, việc làm, an sinh…).
+3. Tạo đồng thuận xã hội và phát huy đoàn kết thống nhất trong khối liên minh và toàn xã hội.
+4. Hoàn thiện thể chế kinh tế thị trường định hướng XHCN; phát triển khoa học - công nghệ.
+5. Đổi mới hoạt động của Đảng, Nhà nước, Mặt trận Tổ quốc để tăng cường liên minh và đại đoàn kết.
+
+## Kết luận (gợi ý trình bày)
+
+Cơ cấu xã hội - giai cấp và liên minh giai cấp, tầng lớp là vấn đề chiến lược, có ý nghĩa quyết định đối với thành công của sự nghiệp xây dựng chủ nghĩa xã hội ở Việt Nam. Nhận thức đúng và vận dụng sáng tạo các quy luật khách quan sẽ góp phần củng cố khối đại đoàn kết toàn dân tộc vững mạnh, thực hiện mục tiêu “dân giàu, nước mạnh, dân chủ, công bằng, văn minh”.
+
+## Từ khóa gợi ý để tra cứu/đặt câu hỏi
+
+- “cơ cấu xã hội”, “cơ cấu xã hội - giai cấp”
+- “thời kỳ quá độ lên CNXH”
+- “quy luật biến đổi cơ cấu xã hội - giai cấp”
+- “liên minh giai cấp, tầng lớp”, “liên minh công - nông - trí thức”
+- “nội dung liên minh: kinh tế - chính trị - văn hóa xã hội”
+- “đặc điểm cơ cấu xã hội - giai cấp ở Việt Nam sau 1986”

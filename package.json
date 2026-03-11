@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "node scripts/sync-gemini-reference.mjs && vite build",
     "dev": "vite"
   },
   "dependencies": {
