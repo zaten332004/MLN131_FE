@@ -22,6 +22,9 @@ function withCacheBust(url: string, cacheKey?: string) {
   if (!url) {
     return "";
   }
+  if (/^(data:|blob:)/i.test(url)) {
+    return url;
+  }
   if (!cacheKey) {
     return url;
   }

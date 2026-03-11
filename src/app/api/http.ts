@@ -24,7 +24,7 @@ export function resolveApiAssetUrl(assetPath?: string | null) {
   if (!assetPath) {
     return "";
   }
-  if (/^https?:\/\//i.test(assetPath)) {
+  if (/^(https?:)?\/\//i.test(assetPath) || /^data:/i.test(assetPath) || /^blob:/i.test(assetPath)) {
     return assetPath;
   }
   const baseUrl =

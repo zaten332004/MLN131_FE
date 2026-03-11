@@ -3,6 +3,8 @@ import { ApiError } from "../api/http";
 import { login as loginApi, me as meApi, register as registerApi } from "../api/auth";
 import { clearAuth, isExpired, loadAuth, saveAuthFromResponse, updatePersistedUser } from "../api/storage";
 import type { Role, UserProfileResponse } from "../api/types";
+import { saveDisabledNotice } from "../local/db";
+import { onLocalEvent } from "../local/events";
 
 interface User {
   id: string;
@@ -49,10 +51,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const persistForNotice = persisted;
+
     meApi()
       .then((profile) => {
         const nextUser = toAuthUser(profile);
         if (nextUser.isDisabled) {
+          saveDisabledNotice({
+            userId: profile.id,
+            email: profile.email,
+            at: new Date().toISOString(),
+            reason: "Tài khoản đã bị vô hiệu hoá.",
+          });
           clearAuth();
           setUser(null);
           return;
@@ -60,10 +70,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updatePersistedUser(profile);
         setUser(nextUser);
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err instanceof ApiError && err.status === 403 && persistForNotice?.user?.id && persistForNotice.user.email) {
+          saveDisabledNotice({
+            userId: persistForNotice.user.id,
+            email: persistForNotice.user.email,
+            at: new Date().toISOString(),
+            reason: "Tài khoản đã bị vô hiệu hoá.",
+          });
+        }
         clearAuth();
         setUser(null);
       });
+  }, []);
+
+  useEffect(() => {
+    const checkDisabled = async () => {
+      try {
+        const profile = await meApi();
+        if (profile.isDisabled) {
+          saveDisabledNotice({
+            userId: profile.id,
+            email: profile.email,
+            at: new Date().toISOString(),
+            reason: "Tài khoản đã bị vô hiệu hoá.",
+          });
+          clearAuth();
+          setUser(null);
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    const off = onLocalEvent("users-updated", () => checkDisabled());
+    const onStorage = (e: StorageEvent) => {
+      if (!e.key) return;
+      if (e.key.startsWith("mln131.users") || e.key === "mln131.auth") {
+        checkDisabled();
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    const interval = window.setInterval(checkDisabled, 10_000);
+
+    return () => {
+      off();
+      window.removeEventListener("storage", onStorage);
+      window.clearInterval(interval);
+    };
   }, []);
 
   const login = async (email: string, password: string): Promise<{ ok: boolean; user?: User; error?: string }> => {
@@ -112,6 +167,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateFromProfile = (profile: UserProfileResponse) => {
     const nextUser = toAuthUser(profile);
     if (nextUser.isDisabled) {
+      saveDisabledNotice({
+        userId: profile.id,
+        email: profile.email,
+        at: new Date().toISOString(),
+        reason: "Tài khoản đã bị vô hiệu hoá.",
+      });
       clearAuth();
       setUser(null);
       return;

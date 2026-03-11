@@ -21,7 +21,7 @@ export function LoginPage() {
     setLoading(false);
 
     if (result.ok) {
-      navigate(result.user?.role === "admin" ? "/admin" : "/knowledge");
+      navigate(result.user?.role === "admin" ? "/admin" : "/knowledge", { replace: true });
       return;
     }
 
@@ -82,6 +82,11 @@ export function LoginPage() {
                   className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
                 />
               </div>
+              <div className="mt-2 text-right">
+                <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  Quên mật khẩu?
+                </Link>
+              </div>
             </div>
 
             <button
@@ -115,3 +120,4 @@ export function LoginPage() {
     </div>
   );
 }
+

@@ -33,7 +33,7 @@ export function RegisterPage() {
     setLoading(false);
 
     if (result.ok) {
-      navigate(result.user?.role === "admin" ? "/admin" : "/knowledge");
+      navigate(result.user?.role === "admin" ? "/admin" : "/knowledge", { replace: true });
       return;
     }
 

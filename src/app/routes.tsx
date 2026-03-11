@@ -9,6 +9,9 @@ import { GamesPage } from "./pages/GamesPage";
 import { QuizPage } from "./pages/QuizPage";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { ProfilePage } from "./pages/ProfilePage";
+import { DisabledPage } from "./pages/DisabledPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { ErrorPage } from "./pages/ErrorPage";
 import { useAuth } from "./contexts/AuthContext";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -45,6 +48,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <PageTransitionLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -61,6 +65,18 @@ export const router = createBrowserRouter([
             <LoginPage />
           </PublicOnlyRoute>
         ),
+      },
+      {
+        path: "forgot-password",
+        element: (
+          <PublicOnlyRoute>
+            <ForgotPasswordPage />
+          </PublicOnlyRoute>
+        ),
+      },
+      {
+        path: "disabled",
+        element: <DisabledPage />,
       },
       {
         path: "register",

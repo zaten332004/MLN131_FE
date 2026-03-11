@@ -1,4 +1,5 @@
 import type { AuthResponse, UserProfileResponse } from "./types";
+import { emitLocalEvent } from "../local/events";
 
 const AUTH_STORAGE_KEY = "mln131.auth";
 
@@ -32,6 +33,7 @@ export function loadAuth(): PersistedAuth | null {
 
 export function saveAuth(auth: PersistedAuth) {
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+  emitLocalEvent("auth-changed");
 }
 
 export function saveAuthFromResponse(response: AuthResponse) {
@@ -57,6 +59,7 @@ export function updatePersistedUser(user: UserProfileResponse) {
 export function clearAuth() {
   localStorage.removeItem(AUTH_STORAGE_KEY);
   localStorage.removeItem("user");
+  emitLocalEvent("auth-changed");
 }
 
 function toEpochMs(expiresAt: string | number) {

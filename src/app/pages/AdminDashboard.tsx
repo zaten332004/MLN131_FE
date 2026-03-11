@@ -6,6 +6,7 @@ import { Footer } from "../components/Footer";
 import { useAuth } from "../contexts/AuthContext";
 import { getRealtimeStats, listUsers, setUserDisabled } from "../api/admin";
 import type { AdminUserResponse, RealtimeStatsResponse } from "../api/types";
+import { onLocalEvent } from "../local/events";
 
 function formatShortDateTime(iso: string) {
   const date = new Date(iso);
@@ -45,7 +46,7 @@ export function AdminDashboard() {
       setStatsError("");
       setStats(next);
     } catch (e) {
-      setStatsError(e instanceof Error ? e.message : "KhÃ´ng táº£i Ä‘Æ°á»£c realtime stats.");
+      setStatsError(e instanceof Error ? e.message : "Không tải được realtime stats.");
     } finally {
       setStatsLoading(false);
     }
@@ -56,50 +57,50 @@ export function AdminDashboard() {
       return;
     }
 
-    let isCancelled = false;
-    const fetchStats = async () => {
-      try {
-        const next = await getRealtimeStats();
-        if (isCancelled) {
-          return;
-        }
-        setStatsError("");
-        setStats(next);
-      } catch (e) {
-        if (isCancelled) {
-          return;
-        }
-        setStatsError(e instanceof Error ? e.message : "Không tải được realtime stats.");
-      }
-    };
-
-    fetchStats();
+    refreshStats();
+    const offPresence = onLocalEvent("presence-updated", () => refreshStats());
+    const offPageview = onLocalEvent("pageview", () => refreshStats());
+    const offChat = onLocalEvent("chat-updated", () => refreshStats());
+    const interval = window.setInterval(() => refreshStats(), 5_000);
 
     return () => {
-      isCancelled = true;
+      offPresence();
+      offPageview();
+      offChat();
+      window.clearInterval(interval);
     };
-  }, [user]);
+  }, [refreshStats]);
 
-  const refreshUsers = async (query = q) => {
-    setUsersLoading(true);
-    setUsersError("");
-    try {
-      const next = await listUsers(query.trim() ? query.trim() : undefined);
-      setUsers(next);
-    } catch (e) {
-      setUsersError(e instanceof Error ? e.message : "Không tải được danh sách người dùng.");
-    } finally {
-      setUsersLoading(false);
-    }
-  };
+  const refreshUsers = useCallback(
+    async (query = q) => {
+      setUsersLoading(true);
+      setUsersError("");
+      try {
+        const next = await listUsers(query.trim() ? query.trim() : undefined);
+        setUsers(next);
+      } catch (e) {
+        setUsersError(e instanceof Error ? e.message : "Không tải được danh sách người dùng.");
+      } finally {
+        setUsersLoading(false);
+      }
+    },
+    [q],
+  );
 
   useEffect(() => {
     if (!user || user.role !== "admin") {
       return;
     }
+
     refreshUsers("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    const off = onLocalEvent("users-updated", () => refreshUsers(""));
+    const interval = window.setInterval(() => refreshUsers(q), 10_000);
+
+    return () => {
+      off();
+      window.clearInterval(interval);
+    };
+  }, [q, refreshUsers, user]);
 
   if (!user || user.role !== "admin") {
     return <Navigate to="/knowledge" replace />;
@@ -136,6 +137,24 @@ export function AdminDashboard() {
     }
   };
 
+  const handleChangeRole = async (target: AdminUserResponse, role: "admin" | "user" | "viewer") => {
+    if (target.id === user.id) {
+      setUsersError("Không thể thay đổi role của chính mình.");
+      return;
+    }
+
+    const previous = normalizeRoles(target.roles)[0] as any;
+    setUsers((prev) => prev.map((u) => (u.id === target.id ? { ...u, roles: [role] } : u)));
+
+    try {
+      throw new Error("Role changes are disabled.");
+      setUsersError("");
+    } catch (e) {
+      setUsers((prev) => prev.map((u) => (u.id === target.id ? { ...u, roles: [previous] } : u)));
+      setUsersError(e instanceof Error ? e.message : "Không cập nhật được role.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -162,6 +181,18 @@ export function AdminDashboard() {
         </section>
 
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <StatCard
+            icon={Activity}
+            title="Tổng lượt truy cập"
+            value={Number((stats as any)?.totalPageviews ?? 0).toLocaleString()}
+            tone="blue"
+          />
+          <StatCard
+            icon={Clock}
+            title="Truy cập (24h)"
+            value={Number((stats as any)?.pageviewsLast24h ?? 0).toLocaleString()}
+            tone="cyan"
+          />
           <StatCard icon={Users} title="Visitors online" value={(stats?.visitorsOnline ?? 0).toString()} tone="blue" />
           <StatCard
             icon={Activity}
@@ -171,13 +202,13 @@ export function AdminDashboard() {
           />
           <StatCard
             icon={Shield}
-            title="Users answered (total)"
+            title="Đã chat với AI (total)"
             value={(stats?.distinctUsersAnsweredTotal ?? 0).toLocaleString()}
             tone="purple"
           />
           <StatCard
             icon={Shield}
-            title="Users answered (24h)"
+            title="Đã chat với AI (24h)"
             value={(stats?.distinctUsersAnsweredLast24h ?? 0).toLocaleString()}
             tone="indigo"
           />
@@ -188,7 +219,7 @@ export function AdminDashboard() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Danh sách người dùng</h2>
-              <p className="text-sm text-gray-600">Tối đa 100 user (theo backend). Có thể tìm theo email/tên.</p>
+              <p className="text-sm text-gray-600">Có thể tìm theo email/tên.</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -235,13 +266,15 @@ export function AdminDashboard() {
                       <td className="py-3 text-sm text-gray-800">{u.fullName || u.userName || "—"}</td>
                       <td className="py-3 text-sm text-gray-700">{u.email}</td>
                       <td className="py-3">
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            isAdmin ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
-                          }`}
-                        >
-                          {roles.join(", ")}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              isAdmin ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
+                            }`}
+                          >
+                            {roles.join(", ")}
+                          </span>
+                        </div>
                       </td>
                       <td className="py-3">
                         {disabled ? (

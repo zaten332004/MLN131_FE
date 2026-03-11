@@ -1,33 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import { sendMessage as sendChatMessage } from "../api/chat";
+import { getHistory as getChatHistory, sendMessage as sendChatMessage } from "../api/chat";
+import { findFaqAnswerLocal } from "../content/chatFaqs";
 
 interface Message {
-  id: number;
+  id: string | number;
   text: string;
   sender: "user" | "bot";
   timestamp: Date;
 }
 
-const BOT_RESPONSES: Record<string, string> = {
-  "cơ cấu xã hội":
-    "Cơ cấu xã hội là tổng thể các cộng đồng người cùng các mối quan hệ xã hội giữa các cộng đồng đó.",
-  "cơ cấu xã hội - giai cấp":
-    "Cơ cấu xã hội - giai cấp là hệ thống các giai cấp, tầng lớp xã hội tồn tại khách quan trong một chế độ xã hội nhất định.",
-  "giai cấp công nhân":
-    "Giai cấp công nhân giữ vai trò lãnh đạo thông qua Đảng, đại diện cho lực lượng sản xuất tiên tiến.",
-  "giai cấp nông dân":
-    "Giai cấp nông dân là đồng minh chiến lược của công nhân, có vị trí quan trọng trong nông nghiệp, nông thôn.",
-  "trí thức":
-    "Đội ngũ trí thức là lực lượng lao động sáng tạo, cầu nối giữa lý luận và thực tiễn.",
-  "liên minh giai cấp":
-    "Liên minh giai cấp là sự liên kết giữa công nhân, nông dân và trí thức để thực hiện mục tiêu xây dựng CNXH.",
-  "doanh nhân":
-    "Đội ngũ doanh nhân đóng góp vào tăng trưởng GDP, tạo việc làm và thúc đẩy đổi mới sáng tạo.",
-  "kết luận":
-    "Củng cố khối liên minh giai cấp, tầng lớp là điều kiện chiến lược để xây dựng xã hội công bằng, dân chủ, văn minh.",
-};
+const FALLBACK_MESSAGE =
+  "Mình đã ghi nhận câu hỏi. Bạn thử hỏi theo từ khóa: cơ cấu xã hội - giai cấp, quy luật biến đổi, liên minh giai cấp, nội dung liên minh.";
 
 export function ChatBot() {
   const { isAuthenticated } = useAuth();
@@ -44,23 +29,41 @@ export function ChatBot() {
   ]);
 
   const botHints = useMemo(
-    () => ["cơ cấu xã hội", "liên minh giai cấp", "giai cấp công nhân", "trí thức"],
+    () => ["cơ cấu xã hội - giai cấp", "quy luật biến đổi", "liên minh giai cấp", "nội dung liên minh"],
     [],
   );
+
+  useEffect(() => {
+    if (!isAuthenticated || !isOpen) return;
+
+    let cancelled = false;
+    getChatHistory(1, 200)
+      .then((history) => {
+        if (cancelled) return;
+        if (!history.items?.length) return;
+
+        const ordered = history.items.slice().reverse();
+        setMessages(
+          ordered.map((m) => ({
+            id: m.id,
+            text: m.content,
+            sender: m.role === "assistant" ? "bot" : "user",
+            timestamp: new Date(m.createdAt),
+          })),
+        );
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, isOpen]);
 
   if (!isAuthenticated) {
     return null;
   }
 
-  const findResponse = (text: string) => {
-    const normalized = text.toLowerCase();
-    for (const [keyword, answer] of Object.entries(BOT_RESPONSES)) {
-      if (normalized.includes(keyword)) {
-        return answer;
-      }
-    }
-    return "Mình đã ghi nhận câu hỏi. Bạn thử hỏi theo từ khóa: cơ cấu xã hội, liên minh giai cấp, công nhân, nông dân, trí thức.";
-  };
+  const findResponse = (text: string) => findFaqAnswerLocal(text).trim() || FALLBACK_MESSAGE;
 
   const handleSend = async () => {
     const trimmed = inputText.trim();
@@ -81,9 +84,10 @@ export function ChatBot() {
     setIsSending(true);
     try {
       const response = await sendChatMessage({ message: trimmed });
+      const answer = response?.answer?.trim() ? response.answer : findResponse(trimmed);
       const botMessage: Message = {
         id: Date.now() + 1,
-        text: response?.answer ? response.answer : findResponse(trimmed),
+        text: answer,
         sender: "bot",
         timestamp: new Date(),
       };
@@ -129,9 +133,7 @@ export function ChatBot() {
             </button>
           </div>
 
-          <div className="px-4 py-2 border-b border-gray-100 text-xs text-gray-600">
-            Gợi ý: {botHints.join(" • ")}
-          </div>
+          <div className="px-4 py-2 border-b border-gray-100 text-xs text-gray-600">Gợi ý: {botHints.join(" • ")}</div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
             {messages.map((message) => (
@@ -145,10 +147,7 @@ export function ChatBot() {
                 >
                   <p>{message.text}</p>
                   <p className={`text-[10px] mt-1 ${message.sender === "user" ? "text-blue-100" : "text-gray-400"}`}>
-                    {message.timestamp.toLocaleTimeString("vi-VN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {message.timestamp.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
               </div>
@@ -181,3 +180,4 @@ export function ChatBot() {
     </>
   );
 }
+

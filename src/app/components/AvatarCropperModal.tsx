@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 const CROP_SIZE = 280;
-const OUTPUT_SIZE = 512;
+const OUTPUT_SIZE = 256;
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -62,10 +62,10 @@ async function cropToPng(params: {
   ctx.drawImage(imageEl, sourceX, sourceY, sourceSize, sourceSize, 0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
 
   const blob = await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Không tạo được ảnh"))), "image/png");
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Không tạo được ảnh"))), "image/jpeg", 0.85);
   });
 
-  return new File([blob], "avatar.png", { type: "image/png" });
+  return new File([blob], "avatar.jpg", { type: "image/jpeg" });
 }
 
 export function AvatarCropperModal({
@@ -261,4 +261,3 @@ export function AvatarCropperModal({
     </div>
   );
 }
-
