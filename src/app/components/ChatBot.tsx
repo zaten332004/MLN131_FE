@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getHistory as getChatHistory, sendMessage as sendChatMessage } from "../api/chat";
+import { ApiError } from "../api/http";
 import { LOCAL_FALLBACK_ENABLED } from "../api/localFallback";
 import { findFaqAnswerLocal } from "../content/chatFaqs";
 
@@ -14,6 +15,27 @@ interface Message {
 
 const FALLBACK_MESSAGE =
   "Mình đã ghi nhận câu hỏi. Bạn thử hỏi theo từ khóa: cơ cấu xã hội - giai cấp, quy luật biến đổi, liên minh giai cấp, nội dung liên minh.";
+ 
+function toChatErrorMessage(err: unknown) {
+  if (err instanceof ApiError) {
+    const body = err.body;
+    if (body && typeof body === "object") {
+      const message = typeof (body as any).message === "string" ? String((body as any).message) : "";
+      const upstream = (body as any).details?.error?.message;
+      if (typeof upstream === "string" && upstream.trim()) {
+        return message ? `${message} (${upstream.trim()})` : upstream.trim();
+      }
+      if (message) {
+        return message;
+      }
+    }
+    return err.message || `Request failed (${err.status})`;
+  }
+  if (err instanceof Error) {
+    return err.message || "Request failed.";
+  }
+  return "Request failed.";
+}
 
 export function ChatBot() {
   const { isAuthenticated } = useAuth();
@@ -95,7 +117,7 @@ export function ChatBot() {
       };
       setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Request failed.";
+      const errorMessage = toChatErrorMessage(err);
       const botMessage: Message = {
         id: Date.now() + 1,
         text: LOCAL_FALLBACK_ENABLED ? findResponse(trimmed) : errorMessage,
