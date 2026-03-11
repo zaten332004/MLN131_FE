@@ -1,6 +1,7 @@
 import * as crypto from "node:crypto";
-// Note: Vercel deploys this as ESM; include the `.js` extension for Node's ESM resolver.
-import { CH5_REFERENCE_TEXT } from "./gemini-priority-chuong-5.generated.js";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 type Role = "admin" | "user" | "viewer";
 type ChatRole = "user" | "assistant";
@@ -8,9 +9,43 @@ type ChatRole = "user" | "assistant";
 type GeminiContentPart = { text: string };
 type GeminiContent = { role: "user"; parts: GeminiContentPart[] };
 
-function loadCh5ReferenceText() {
-  const normalized = String(CH5_REFERENCE_TEXT ?? "").trim();
-  return normalized || null;
+let ch5ReferenceCache: string | null | undefined = undefined;
+
+async function loadCh5ReferenceText() {
+  if (ch5ReferenceCache !== undefined) return ch5ReferenceCache;
+
+  const normalizedFromEnv = String(process.env.GEMINI_CH5_REFERENCE_TEXT ?? "").trim();
+  if (normalizedFromEnv) {
+    ch5ReferenceCache = normalizedFromEnv;
+    return ch5ReferenceCache;
+  }
+
+  // Try loading from a generated module (preferred when bundled by the platform).
+  try {
+    // Note: Vercel may run the compiled output as ESM; include `.js`.
+    const mod = (await import("./gemini-priority-chuong-5.generated.js")) as any;
+    const normalized = String(mod?.CH5_REFERENCE_TEXT ?? "").trim();
+    if (normalized) {
+      ch5ReferenceCache = normalized;
+      return ch5ReferenceCache;
+    }
+  } catch {
+    // ignore
+  }
+
+  // Fallback: read the reference file from disk if present.
+  try {
+    const baseDir = path.dirname(fileURLToPath(import.meta.url));
+    const primary = path.resolve(baseDir, "guidelines", "gemini-priority-chuong-5.txt");
+    const fallback = path.resolve(baseDir, "..", "guidelines", "gemini-priority-chuong-5.txt");
+    const raw = await readFile(primary, "utf8").catch(() => readFile(fallback, "utf8"));
+    const normalized = String(raw ?? "").trim();
+    ch5ReferenceCache = normalized || null;
+  } catch {
+    ch5ReferenceCache = null;
+  }
+
+  return ch5ReferenceCache;
 }
 
 function shouldInjectCh5Reference(message: string) {
@@ -40,7 +75,7 @@ async function buildGeminiContents(message: string): Promise<GeminiContent[]> {
 
   if (!shouldInjectCh5Reference(message)) return base;
 
-  const ref = loadCh5ReferenceText();
+  const ref = await loadCh5ReferenceText();
 
   const maxChars = 18_000;
   const clipped = ref ? (ref.length > maxChars ? `${ref.slice(0, maxChars)}\n\n[TRUNCATED]` : ref) : "";
