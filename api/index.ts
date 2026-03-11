@@ -46,7 +46,7 @@ async function readJson(req: any) {
 
 function toBearerToken(req: any) {
   const header = String(req?.headers?.authorization ?? req?.headers?.Authorization ?? "");
-  const match = header.match(/^bearer\\s+(.+)$/i);
+  const match = header.match(/^bearer\s+(.+)$/i);
   return match ? match[1].trim() : "";
 }
 
