@@ -313,6 +313,74 @@ export function AdminDashboard() {
             </table>
           </div>
         </section>
+
+        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 mt-8">
+          <div className="mb-5">
+            <h2 className="text-2xl font-bold text-gray-900">Thông tin nhóm</h2>
+            <p className="text-sm text-gray-600">Thành viên, phân công và công cụ AI sử dụng.</p>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">Thành viên, MSSV, task</h3>
+              <div className="overflow-x-auto border border-gray-100 rounded-xl">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr className="text-left">
+                      <th className="px-4 py-3 text-sm text-gray-600 font-semibold">Thành viên</th>
+                      <th className="px-4 py-3 text-sm text-gray-600 font-semibold whitespace-nowrap">MSSV</th>
+                      <th className="px-4 py-3 text-sm text-gray-600 font-semibold">Task</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    <tr>
+                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">Nguyễn Nhật Minh</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">SE173035</td>
+                      <td className="px-4 py-3 text-sm text-gray-700">
+                        Chuẩn bị slide, lọc nội dung, tìm kiếm hình ảnh
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">Nguyễn Mạnh Hoàng Huy</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">SE171399</td>
+                      <td className="px-4 py-3 text-sm text-gray-700">Chuẩn bị slide, trò chơi, lọc nội dung</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">Nguyễn Anh Kiệt</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">SE173510</td>
+                      <td className="px-4 py-3 text-sm text-gray-700">Lọc nội dung, chuyển thành UI, tìm hình ảnh</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">Phạm Minh Nhựt</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">SE184520</td>
+                      <td className="px-4 py-3 text-sm text-gray-700">
+                        Lọc nội dung, hoàn thành tính năng web, phục chế hình ảnh
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">AI sử dụng</h3>
+              <div className="border border-gray-100 rounded-xl p-4">
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li>
+                    <span className="font-semibold text-gray-900">NotbookLM:</span> tìm nội dung chính
+                  </li>
+                  <li>
+                    <span className="font-semibold text-gray-900">Gemini:</span> phục chế hình ảnh trắng đen thành hình ảnh
+                    có màu, tóm tắt lại nội dung để đưa lên web
+                  </li>
+                  <li>
+                    <span className="font-semibold text-gray-900">Codex:</span> hỗ trợ hoàn thiện web
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
